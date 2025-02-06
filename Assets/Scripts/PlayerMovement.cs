@@ -27,4 +27,12 @@ public class PlayerMovement : MonoBehaviourPun
             photonView.RPC("Shoot", RpcTarget.All);
         }
     }
+
+    [PunRPC]
+
+    void Shoot()
+    {
+        GameObject bullet = PhotonNetwork.Instantiate("Bullet", firePoint.position, firePoint.rotation);
+        bullet.GetComponent<Bullet>().photonView.TransferOwnership(photonView.Owner);
+    }
 }
