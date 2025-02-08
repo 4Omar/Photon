@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 1951215397381329903}
   - component: {fileID: 7046470813667274577}
   - component: {fileID: 1123577339657864211}
+  - component: {fileID: 8980853220856869411}
+  - component: {fileID: 6178657052278088100}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -175,9 +177,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  bulletPrefab: {fileID: 6403357180579340184, guid: c4a3c7dc77458c04ea8b8fa80e9f9c00,
-    type: 3}
-  firePoint: {fileID: 1358817831346185275}
 --- !u!114 &1123577339657864211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +193,34 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &8980853220856869411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5575944116449334952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e417694616f59242844d9c972eea1d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 6403357180579340184, guid: c4a3c7dc77458c04ea8b8fa80e9f9c00,
+    type: 3}
+  firePoint: {fileID: 1358817831346185275}
+  bulletSpeed: 10
+--- !u!114 &6178657052278088100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5575944116449334952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d68ca7973d94a546b3069331cc8e4ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6521608256174983212
 GameObject:
   m_ObjectHideFlags: 0

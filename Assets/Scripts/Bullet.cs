@@ -5,15 +5,21 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviourPun
 {
-    public float speed = 10f;
-
+    private float speed = 10f;
     public float lifetime = 2f;
+    private Photon.Realtime.Player owner;
+
+    public void Initialize(float bulletspeed, Photon.Realtime.Player bulletOwner)
+    {
+        speed = bulletspeed;
+        owner = bulletOwner;
+    }
     // Start is called before the first frame update
     void Start()
     {
         if (photonView.IsMine)
         {
-            Destroy(gameObject, lifetime);
+            Destroy(gameObject, 2f);
         }
     }
 

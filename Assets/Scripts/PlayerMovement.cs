@@ -7,13 +7,12 @@ public class PlayerMovement : MonoBehaviourPun
 {
     public float speed = 5f;
 
-    public GameObject bulletPrefab;
+    private Rigidbody rb;
 
-    public Transform firePoint;
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -23,20 +22,10 @@ public class PlayerMovement : MonoBehaviourPun
         {
           float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
           float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
-          transform.Translate(new Vector3 (moveX, 0, moveZ));
+          
+            Vector3 movement = new Vector3(moveX, 0, moveZ) * speed;
+            rb.velocity = movement;
 
-          if (Input.GetButtonDown("Fire1"))
-           {
-              photonView.RPC("Shoot", RpcTarget.All);
-           }
         }
-    }
-
-    [PunRPC]
-
-    void Shoot()
-    {
-        GameObject bullet = PhotonNetwork.Instantiate("Bullet", firePoint.position, firePoint.rotation);
-        bullet.GetComponent<Bullet>().photonView.TransferOwnership(photonView.Owner);
     }
 }
