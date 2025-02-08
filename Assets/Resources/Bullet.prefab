@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 3668310019507376981}
   - component: {fileID: -6555469206240449605}
   - component: {fileID: -525844934953535468}
+  - component: {fileID: 5775766349409234029}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +154,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 5775766349409234029}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -171,3 +173,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   lifetime: 2
+--- !u!114 &5775766349409234029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6403357180579340184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1

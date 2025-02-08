@@ -19,12 +19,16 @@ public class PlayerMovement : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
-        transform.Translate(new Vector3 (moveX, 0, moveZ));
         if (photonView.IsMine)
         {
-            photonView.RPC("Shoot", RpcTarget.All);
+          float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+          float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+          transform.Translate(new Vector3 (moveX, 0, moveZ));
+
+          if (Input.GetButtonDown("Fire1"))
+           {
+              photonView.RPC("Shoot", RpcTarget.All);
+           }
         }
     }
 
