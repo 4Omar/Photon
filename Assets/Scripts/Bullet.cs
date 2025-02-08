@@ -19,7 +19,7 @@ public class Bullet : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, 1f);
         }
     }
 
