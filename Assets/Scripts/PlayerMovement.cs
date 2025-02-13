@@ -20,8 +20,8 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-          float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-          float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+          float moveX = Input.GetAxis("Horizontal") ;
+          float moveZ = Input.GetAxis("Vertical") ;
           
             Vector3 movement = new Vector3(moveX, 0, moveZ) * speed;
             rb.velocity = movement;

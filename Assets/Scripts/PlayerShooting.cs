@@ -15,12 +15,9 @@ public class PlayerShooting : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && Input.GetButtonDown("Fire1"))
         {
-            if (Input.GetButtonDown("Fire1"))
-                {
-                photonView.RPC("Shoot", RpcTarget.All);
-            }
+            Shoot();
         }
     }
 
@@ -28,7 +25,7 @@ public class PlayerShooting : MonoBehaviourPun
 
     void Shoot()
     {
-        GameObject bullet = PhotonNetwork.Instantiate("Bullet", firePoint.position, firePoint.rotation);
-        bullet.GetComponent<Bullet>().photonView.TransferOwnership(photonView.Owner);
+        GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, firePoint.position, firePoint.rotation);
+        bullet.GetComponent<Bullet>().Initialize(bulletSpeed, photonView.Owner);
     }
 }

@@ -26,14 +26,28 @@ public class Bullet : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime); 
+        if (photonView.IsMine)
+        {
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (photonView.IsMine && other.CompareTag("Player"))
+        if (photonView.IsMine)
         {
-            Debug.Log("Jugador golpeado");
+            if(!other.CompareTag("Player"))
+            {
+                DestroyBullet();
+            }
+        }
+    }
+    
+    void DestroyBullet()
+    {
+        if (photonView.IsMine)
+        {
             PhotonNetwork.Destroy(gameObject);
         }
     }
