@@ -24,13 +24,21 @@ public class PlayerNameDisplay : MonoBehaviourPun
         }
         else
         {
+            nameLabel = Instantiate(nameLabelPrefab, Vector3.zero, Quaternion.identity);
+            nameLabel.transform.SetParent(GameObject.Find("Canvas").transform, false);
 
+            TextMeshProUGUI nameText = nameLabel.GetComponent<TextMeshProUGUI>();
+            nameText.text = photonView.Owner.NickName;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (nameLabel != null)
+        {
+            Vector3 screenPosition = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+            nameLabel.transform.position = screenPosition;
+        }
     }
 }
