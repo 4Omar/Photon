@@ -1,32 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
 public class PlayerAiming : MonoBehaviourPun
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        // Verifica si el jugador local es el dueño del PhotonView
         if (photonView.IsMine)
         {
+            // Obtener la posición del cursor en el mundo
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if(Physics.Raycast(ray, out RaycastHit hitInfo))
+            // Lanzar un rayo desde la cámara hacia la posición del cursor
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                Vector3 direction = hitInfo.point - transform.position;
+                // Calcular la dirección desde el jugador hacia el punto de impacto del rayo
+                Vector3 direction = hit.point - transform.position;
+
+                // Ignorar la componente Y para evitar rotaciones no deseadas en el eje vertical
                 direction.y = 0;
 
-                if(direction != Vector3.zero)
+                // Rotar el jugador hacia la dirección del cursor
+                if (direction != Vector3.zero)
                 {
+                    // Calcular la rotación objetivo usando la dirección
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);
+
+                    // Suavizar la rotación del jugador hacia la dirección del cursor
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
                 }
             }
         }

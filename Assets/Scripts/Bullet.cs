@@ -1,55 +1,61 @@
-using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Bullet : MonoBehaviourPun
 {
-    private float speed = 10f;
-    public float lifetime = 2f;
+    // Velocidad de la bala
+    private float speed;
+
+    // Dueño de la bala (jugador que la disparó)
     private Photon.Realtime.Player owner;
 
-    public void Initialize(float bulletspeed, Photon.Realtime.Player bulletOwner)
+    // Método para inicializar la bala
+    public void Initialize(float bulletSpeed, Photon.Realtime.Player bulletOwner)
     {
-        speed = bulletspeed;
-        owner = bulletOwner;
+        speed = bulletSpeed; // Asigna la velocidad
+        owner = bulletOwner; // Asigna el dueño
     }
-    // Start is called before the first frame update
+
     void Start()
     {
+        // Solo el dueño del PhotonView ejecuta esta lógica
         if (photonView.IsMine)
         {
-            Destroy(gameObject, 1f);
+            // Programa la destrucción de la bala después de 1 segundo
+            Invoke("DestroyBullet", 1f);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Solo el dueño del PhotonView ejecuta esta lógica
         if (photonView.IsMine)
         {
+            // Mueve la bala hacia adelante en su dirección actual
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }
-
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
+        // Solo el dueño del PhotonView ejecuta esta lógica
         if (photonView.IsMine)
         {
-            if(!other.CompareTag("Player"))
+            // Verifica si la bala chocó con algo que no sea el jugador
+            if (!other.CompareTag("Player"))
             {
-                DestroyBullet();
+                DestroyBullet(); // Destruye la bala
             }
         }
     }
-    
+
     void DestroyBullet()
     {
+        // Solo el dueño del PhotonView ejecuta esta lógica
         if (photonView.IsMine)
         {
+            // Destruye la bala en la red
             PhotonNetwork.Destroy(gameObject);
         }
     }
-
 }

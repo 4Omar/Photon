@@ -1,31 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Photon.Chat;
 using Photon.Pun;
 
 public class PlayerShooting : MonoBehaviourPun
 {
-    public GameObject bulletPrefab;
-
+    // Punto desde donde se disparan las balas
     public Transform firePoint;
 
+    // Velocidad de la bala
     public float bulletSpeed = 10f;
 
-    // Update is called once per frame
+    // Prefab de la bala (debe estar en la carpeta Resources)
+    public GameObject bulletPrefab;
+
     void Update()
     {
+        // Verifica si el jugador local es el dueño del PhotonView y si presiona el botón de disparo
         if (photonView.IsMine && Input.GetButtonDown("Fire1"))
         {
-            Shoot();
+            Shoot(); // Llama al método para disparar
         }
     }
 
-    [PunRPC]
-
     void Shoot()
     {
+        // Instancia la bala en la red usando PhotonNetwork.Instantiate
+        // Solo el jugador local (dueño del PhotonView) ejecuta esta lógica
         GameObject bullet = PhotonNetwork.Instantiate(bulletPrefab.name, firePoint.position, firePoint.rotation);
+
+        // Inicializa la bala con la velocidad y el dueño (jugador que disparó)
         bullet.GetComponent<Bullet>().Initialize(bulletSpeed, photonView.Owner);
     }
 }
