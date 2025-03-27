@@ -1,40 +1,64 @@
 using UnityEngine;
 using Photon.Pun;
 
+/// <summary>
+/// Controla el comportamiento de los enemigos que disparan en el juego.
+/// Se enfoca en la detección y disparo hacia jugadores cercanos.
+/// </summary>
 public class EnemyShooter : MonoBehaviourPun
 {
-    public GameObject projectilePrefab; // Prefab del proyectil
-    public Transform firePoint; // Punto de origen del disparo
-    public float fireRate = 1f; // Tiempo entre disparos (en segundos)
-    public float detectionRange = 10f; // Rango de detección del jugador
-    public float rotationSpeed = 5f; // Velocidad de rotación hacia el jugador
+    [Header("Configuración de Disparo")]
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+    public float fireRate = 1f;
+    public float detectionRange = 10f;
+    public float rotationSpeed = 2f;
 
-    private float nextFireTime = 0f; // Tiempo para el próximo disparo
-    private GameObject targetPlayer; // Jugador objetivo
+    private float nextFireTime = 0f;
+    private GameObject targetPlayer;
+
+    private void Start()
+    {
+        transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+
+        if (photonView == null)
+        {
+            Debug.LogError("PhotonView no encontrado en EnemyShooter");
+            return;
+        }
+
+        if (!photonView.IsMine)
+        {
+            photonView.RequestOwnership();
+        }
+    }
 
     void Update()
     {
-        if (!photonView.IsMine) // Solo el dueño del PhotonView puede disparar
-            return;
-
-        FindNearestPlayer(); // Buscar al jugador más cercano
+        FindNearestPlayer();
 
         if (targetPlayer != null)
         {
-            RotateTowardsPlayer(); // Girar hacia el jugador
+            RotateTowardsPlayer();
 
-            if (Time.time >= nextFireTime)
+            float distanceToPlayer = Vector3.Distance(transform.position, targetPlayer.transform.position);
+            if (distanceToPlayer <= detectionRange && Time.time >= nextFireTime)
             {
-                Shoot(); // Disparar hacia el jugador
-                nextFireTime = Time.time + fireRate; // Actualizar el tiempo del próximo disparo
+                Vector3 directionToPlayer = (targetPlayer.transform.position - transform.position).normalized;
+                float dot = Vector3.Dot(transform.forward, directionToPlayer);
+                
+                if (dot > 0.8f)
+                {
+                    Shoot();
+                    nextFireTime = Time.time + fireRate;
+                }
             }
         }
     }
 
-    // Método para encontrar al jugador más cercano
     void FindNearestPlayer()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); // Buscar todos los jugadores
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         float nearestDistance = Mathf.Infinity;
         GameObject nearestPlayer = null;
 
@@ -48,42 +72,70 @@ public class EnemyShooter : MonoBehaviourPun
             }
         }
 
-        targetPlayer = nearestPlayer; // Asignar al jugador más cercano como objetivo
+        targetPlayer = nearestPlayer;
     }
 
-    // Método para girar hacia el jugador
     void RotateTowardsPlayer()
     {
         if (targetPlayer != null)
         {
-            // Calcular la dirección hacia el jugador
-            Vector3 direction = (targetPlayer.transform.position - transform.position).normalized;
+            Vector3 targetPosition = targetPlayer.transform.position;
+            targetPosition.y = transform.position.y;
+            Vector3 direction = (targetPosition - transform.position).normalized;
+            
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, 
+                targetRotation, 
+                rotationSpeed * Time.deltaTime * 60f
+            );
 
-            // Calcular la rotación necesaria para mirar hacia el jugador
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-
-            // Suavizar la rotación hacia el jugador
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-
-            // Asegurarse de que el firePoint también apunte hacia el jugador
             if (firePoint != null)
             {
-                firePoint.rotation = lookRotation;
+                firePoint.rotation = transform.rotation;
             }
         }
     }
 
-    // Método para disparar
     void Shoot()
     {
-        if (targetPlayer != null && projectilePrefab != null && firePoint != null)
-        {
-            // Calcular la dirección hacia el jugador
-            Vector3 direction = (targetPlayer.transform.position - firePoint.position).normalized;
+        if (targetPlayer == null || projectilePrefab == null || firePoint == null) return;
 
-            // Instanciar el proyectil en la red
-            GameObject projectile = PhotonNetwork.Instantiate(projectilePrefab.name, firePoint.position, firePoint.rotation);
-            projectile.GetComponent<Projectile>().SetDirection(direction); // Establecer la dirección del proyectil
+        Vector3 direction = (targetPlayer.transform.position - firePoint.position).normalized;
+        
+        try
+        {
+            GameObject projectile = PhotonNetwork.Instantiate(
+                projectilePrefab.name, 
+                firePoint.position, 
+                Quaternion.LookRotation(direction)
+            );
+
+            Projectile projectileComponent = projectile.GetComponent<Projectile>();
+            if (projectileComponent != null)
+            {
+                projectileComponent.SetDirection(direction);
+                Debug.Log("Proyectil disparado hacia: " + direction);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Error al instanciar el proyectil: " + e.Message);
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bullet_2"))
+        {
+            Debug.Log("Hity");
+            Destroy(gameObject);
         }
     }
 }
