@@ -5,11 +5,18 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Floor
+  - Bullet
+  - Bullet_2
+  - Dirt
+  - Coin
+  - Obstacle
+  - Wall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Floor
   - Water
   - UI
   - 
